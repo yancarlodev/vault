@@ -8,7 +8,10 @@ import (
 )
 
 var (
-	configFilePath string
+	customConfigFilePath string
+	configPath           string
+	configName           string = "config"
+	configType           string = "yaml"
 
 	rootCmd = &cobra.Command{
 		Use:   "vlt",
@@ -25,26 +28,30 @@ func Execute() {
 }
 
 func init() {
+	configPath = getConfigPath()
+
 	cobra.OnInitialize(initConfig)
 
+	description := fmt.Sprintf("config file (default is %s/vlt/%s.%s)", configPath, configName, configType)
+
 	rootCmd.PersistentFlags().StringVarP(
-		&configFilePath,
+		&customConfigFilePath,
 		"config",
 		"c",
 		"",
-		fmt.Sprintf("config file (default is %s/.vlt.yaml)", getConfigPath()),
+		description,
 	)
 }
 
 func initConfig() {
-	if configFilePath != "" {
-		viper.SetConfigFile(configFilePath)
+	if customConfigFilePath != "" {
+		viper.SetConfigFile(customConfigFilePath)
 	} else {
-		configPath := getConfigPath()
+		vltConfigPath := fmt.Sprintf("%s/%s", configPath, "vlt")
 
-		viper.AddConfigPath(fmt.Sprintf("%s/%s", configPath, "vlt"))
-		viper.SetConfigType("yaml")
-		viper.SetConfigName(".vlt")
+		viper.AddConfigPath(vltConfigPath)
+		viper.SetConfigType(configType)
+		viper.SetConfigName(configName)
 	}
 
 	viper.AutomaticEnv()
