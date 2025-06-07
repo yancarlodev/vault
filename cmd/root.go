@@ -18,15 +18,13 @@ var (
 	version              string = "v0.1"
 )
 
-var (
-	rootCmd = &cobra.Command{
-		Use:     "vlt",
-		Short:   "Vault stores notes, secrets and passwords securely",
-		Long:    "A secure and handy note taker that take care of your secrets for you.",
-		Version: version,
-		Run:     func(cmd *cobra.Command, args []string) {},
-	}
-)
+var rootCmd = &cobra.Command{
+	Use:     "vlt",
+	Short:   "Vault stores notes, secrets and passwords securely",
+	Long:    "A secure and handy note taker that take care of your secrets for you.",
+	Version: version,
+	Run:     func(cmd *cobra.Command, args []string) {},
+}
 
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
@@ -37,7 +35,7 @@ func Execute() {
 func init() {
 	cobra.OnInitialize(initConfig)
 
-	description := fmt.Sprintf("config file (default is %s/vlt/%s.%s)", Dirs.ConfigHome(), configName, configType)
+	description := fmt.Sprintf("config file (default is %s/%s.%s)", Dirs.ConfigHome(), configName, configType)
 
 	rootCmd.Flags().StringVarP(&customConfigFilePath, "config", "c", "", description)
 
@@ -66,7 +64,7 @@ func setConfigFile() {
 		return
 	}
 
-	viper.AddConfigPath(fmt.Sprintf("%s/%s", Dirs.ConfigHome(), "vlt"))
+	viper.AddConfigPath(Dirs.ConfigHome())
 	viper.SetConfigType("yaml")
 	viper.SetConfigName(".vlt")
 }
