@@ -44,21 +44,27 @@ func init() {
 }
 
 func initConfig() {
-	if customConfigFilePath != "" {
-		viper.SetConfigFile(customConfigFilePath)
-	} else {
-		vltConfigPath := fmt.Sprintf("%s/%s", configPath, "vlt")
-
-		viper.AddConfigPath(vltConfigPath)
-		viper.SetConfigType(configType)
-		viper.SetConfigName(configName)
-	}
+	setConfigFile()
 
 	viper.AutomaticEnv()
 
 	if err := viper.ReadInConfig(); err == nil {
 		fmt.Println("Using config file:", viper.ConfigFileUsed())
 	}
+}
+
+func setConfigFile() {
+	if customConfigFilePath != "" {
+		viper.SetConfigFile(customConfigFilePath)
+
+		return
+	}
+
+	configPath := getConfigPath()
+
+	viper.AddConfigPath(fmt.Sprintf("%s/%s", configPath, "vlt"))
+	viper.SetConfigType("yaml")
+	viper.SetConfigName(".vlt")
 }
 
 func getConfigPath() string {
