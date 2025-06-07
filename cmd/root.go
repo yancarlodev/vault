@@ -5,6 +5,7 @@ import (
 	"github.com/apparentlymart/go-userdirs/userdirs"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"os"
 )
 
 var (
@@ -33,7 +34,7 @@ func Execute() {
 }
 
 func init() {
-	cobra.OnInitialize(initConfig)
+	cobra.OnInitialize(initCLI)
 
 	description := fmt.Sprintf("config file (default is %s/%s.%s)", Dirs.ConfigHome(), configName, configType)
 
@@ -47,7 +48,9 @@ func init() {
 	rootCmd.AddCommand(addCmd)
 }
 
-func initConfig() {
+func initCLI() {
+	setupFolders()
+
 	setConfigFile()
 
 	viper.AutomaticEnv()
@@ -55,6 +58,11 @@ func initConfig() {
 	if err := viper.ReadInConfig(); err == nil {
 		fmt.Println("Using config file:", viper.ConfigFileUsed())
 	}
+}
+
+func setupFolders() {
+	_ = os.Mkdir(Dirs.ConfigHome(), 0700)
+	_ = os.Mkdir(Dirs.DataHome(), 0700)
 }
 
 func setConfigFile() {
