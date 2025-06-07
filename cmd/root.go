@@ -2,22 +2,29 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/apparentlymart/go-userdirs/userdirs"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"os"
+)
+
+var (
+	Dirs = userdirs.ForApp("Vault", "Lepri Developer", "com.yancarlodev.vlt")
 )
 
 var (
 	customConfigFilePath string
-	configPath           string
 	configName           string = "config"
 	configType           string = "yaml"
+	version              string = "v0.1"
+)
 
+var (
 	rootCmd = &cobra.Command{
-		Use:   "vlt",
-		Short: "Vault stores notes, secrets and passwords securely",
-		Long:  "A secure and handy note taker that take care of your secrets for you.",
-		Run:   func(cmd *cobra.Command, args []string) {},
+		Use:     "vlt",
+		Short:   "Vault stores notes, secrets and passwords securely",
+		Long:    "A secure and handy note taker that take care of your secrets for you.",
+		Version: version,
+		Run:     func(cmd *cobra.Command, args []string) {},
 	}
 )
 
@@ -28,24 +35,18 @@ func Execute() {
 }
 
 func init() {
-	configPath = getConfigPath()
-
 	cobra.OnInitialize(initConfig)
 
-	description := fmt.Sprintf("config file (default is %s/vlt/%s.%s)", configPath, configName, configType)
+	description := fmt.Sprintf("config file (default is %s/vlt/%s.%s)", Dirs.ConfigHome(), configName, configType)
 
-	rootCmd.PersistentFlags().StringVarP(
-		&customConfigFilePath,
-		"config",
-		"c",
-		"",
-		description,
-	)
+	rootCmd.Flags().StringVarP(&customConfigFilePath, "config", "c", "", description)
 
 	rootCmd.PersistentFlags().Bool("viper", true, "use Viper for configuration")
 
 	viper.BindPFlag("useViper", rootCmd.PersistentFlags().Lookup("viper"))
 	viper.SetDefault("author", "Yan Lepri yancarlodc@gmail.com")
+
+	rootCmd.AddCommand(addCmd)
 }
 
 func initConfig() {
@@ -65,16 +66,7 @@ func setConfigFile() {
 		return
 	}
 
-	configPath := getConfigPath()
-
-	viper.AddConfigPath(fmt.Sprintf("%s/%s", configPath, "vlt"))
+	viper.AddConfigPath(fmt.Sprintf("%s/%s", Dirs.ConfigHome(), "vlt"))
 	viper.SetConfigType("yaml")
 	viper.SetConfigName(".vlt")
-}
-
-func getConfigPath() string {
-	configPath, err := os.UserConfigDir()
-	cobra.CheckErr(err)
-
-	return configPath
 }
