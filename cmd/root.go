@@ -41,6 +41,11 @@ func init() {
 		"",
 		description,
 	)
+
+	rootCmd.PersistentFlags().Bool("viper", true, "use Viper for configuration")
+
+	viper.BindPFlag("useViper", rootCmd.PersistentFlags().Lookup("viper"))
+	viper.SetDefault("author", "Yan Lepri yancarlodc@gmail.com")
 }
 
 func initConfig() {
