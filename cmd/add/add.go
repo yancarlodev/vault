@@ -1,8 +1,9 @@
-package cmd
+package add
 
 import (
 	"fmt"
 	"github.com/spf13/cobra"
+	"github.com/yancarlodev/vault/infra"
 	"os"
 	"strings"
 )
@@ -14,14 +15,14 @@ var (
 )
 
 func init() {
-	addCmd.Flags().StringVarP(&title, "title", "t", "", "title of the note (required)")
-	addCmd.Flags().StringVarP(&content, "content", "c", "", "content of the note")
-	addCmd.Flags().BoolVarP(&isPrivate, "private", "p", false, "set the visibility of the note to private")
+	AddCmd.Flags().StringVarP(&title, "title", "t", "", "title of the note (required)")
+	AddCmd.Flags().StringVarP(&content, "content", "c", "", "content of the note")
+	AddCmd.Flags().BoolVarP(&isPrivate, "private", "p", false, "set the visibility of the note to private")
 
-	addCmd.MarkFlagRequired("title")
+	AddCmd.MarkFlagRequired("title")
 }
 
-var addCmd = &cobra.Command{
+var AddCmd = &cobra.Command{
 	Use:   "add",
 	Short: "Create a new note",
 	Long:  "Create a new private or public note",
@@ -29,7 +30,7 @@ var addCmd = &cobra.Command{
 }
 
 func run(_ *cobra.Command, _ []string) {
-	dataFolder := Dirs.DataHome()
+	dataFolder := infra.Dirs.DataHome()
 
 	titleTrimmed := strings.Trim(title, " ")
 	titleNormalized := strings.ReplaceAll(titleTrimmed, " ", "_")
