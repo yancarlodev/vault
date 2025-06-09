@@ -5,7 +5,6 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/yancarlodev/vault/infra"
 	"os"
-	"strings"
 )
 
 var (
@@ -32,8 +31,7 @@ var AddCmd = &cobra.Command{
 func run(_ *cobra.Command, _ []string) {
 	dataFolder := infra.Dirs.DataHome()
 
-	titleTrimmed := strings.Trim(title, " ")
-	titleNormalized := strings.ReplaceAll(titleTrimmed, " ", "_")
+	titleTrimmed, titleNormalized := infra.NormalizeInput(title)
 
 	fullFilePath := fmt.Sprintf("%s/%s.md", dataFolder, titleNormalized)
 
