@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"os"
+	"strings"
 )
 
 var (
@@ -30,7 +31,10 @@ var addCmd = &cobra.Command{
 func run(_ *cobra.Command, _ []string) {
 	dataFolder := Dirs.DataHome()
 
-	fullFilePath := fmt.Sprintf("%s/%s.md", dataFolder, title)
+	titleTrimmed := strings.Trim(title, " ")
+	titleNormalized := strings.ReplaceAll(titleTrimmed, " ", "_")
+
+	fullFilePath := fmt.Sprintf("%s/%s.md", dataFolder, titleNormalized)
 
 	if file, _ := os.Stat(fullFilePath); file != nil {
 		cobra.CheckErr("A note with the same name already exists")
@@ -40,5 +44,5 @@ func run(_ *cobra.Command, _ []string) {
 		cobra.CheckErr(err)
 	}
 
-	fmt.Printf("Note %s created.", title)
+	fmt.Printf("Note %s created.", titleTrimmed)
 }
