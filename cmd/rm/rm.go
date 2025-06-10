@@ -37,8 +37,6 @@ func run(_ *cobra.Command, notesTitle []string) {
 
 		if err != nil {
 			cobra.CheckErr(err)
-
-			continue
 		}
 
 		fmt.Printf("Note \"%s\" removed", titleTrimmed)
