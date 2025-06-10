@@ -2,14 +2,12 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/apparentlymart/go-userdirs/userdirs"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"github.com/yancarlodev/vault/cmd/add"
+	"github.com/yancarlodev/vault/cmd/rm"
+	"github.com/yancarlodev/vault/infra"
 	"os"
-)
-
-var (
-	Dirs = userdirs.ForApp("Vault", "Lepri Developer", "com.yancarlodev.vlt")
 )
 
 var (
@@ -36,7 +34,7 @@ func Execute() {
 func init() {
 	cobra.OnInitialize(initCLI)
 
-	description := fmt.Sprintf("config file (default is %s/%s.%s)", Dirs.ConfigHome(), configName, configType)
+	description := fmt.Sprintf("config file (default is %s/%s.%s)", infra.Dirs.ConfigHome(), configName, configType)
 
 	rootCmd.Flags().StringVarP(&customConfigFilePath, "config", "c", "", description)
 
@@ -45,7 +43,8 @@ func init() {
 	viper.BindPFlag("useViper", rootCmd.PersistentFlags().Lookup("viper"))
 	viper.SetDefault("author", "Yan Lepri yancarlodc@gmail.com")
 
-	rootCmd.AddCommand(addCmd)
+	rootCmd.AddCommand(add.AddCmd)
+	rootCmd.AddCommand(rm.RmCmd)
 }
 
 func initCLI() {
@@ -61,8 +60,8 @@ func initCLI() {
 }
 
 func setupFolders() {
-	_ = os.Mkdir(Dirs.ConfigHome(), 0700)
-	_ = os.Mkdir(Dirs.DataHome(), 0700)
+	_ = os.Mkdir(infra.Dirs.ConfigHome(), 0700)
+	_ = os.Mkdir(infra.Dirs.DataHome(), 0700)
 }
 
 func setConfigFile() {
@@ -72,7 +71,7 @@ func setConfigFile() {
 		return
 	}
 
-	viper.AddConfigPath(Dirs.ConfigHome())
+	viper.AddConfigPath(infra.Dirs.ConfigHome())
 	viper.SetConfigType("yaml")
 	viper.SetConfigName(".vlt")
 }
