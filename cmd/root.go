@@ -5,6 +5,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/yancarlodev/vault/cmd/add"
+	"github.com/yancarlodev/vault/cmd/list"
 	"github.com/yancarlodev/vault/cmd/rm"
 	"github.com/yancarlodev/vault/infra"
 	"os"
@@ -45,6 +46,7 @@ func init() {
 
 	rootCmd.AddCommand(add.AddCmd)
 	rootCmd.AddCommand(rm.RmCmd)
+	rootCmd.AddCommand(list.ListCmd)
 }
 
 func initCLI() {
