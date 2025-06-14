@@ -16,7 +16,7 @@ var (
 func init() {
 	AddCmd.Flags().StringVarP(&title, "title", "t", "", "title of the note (required)")
 	AddCmd.Flags().StringVarP(&content, "content", "c", "", "content of the note")
-	AddCmd.Flags().BoolVarP(&isPrivate, "private", "p", false, "set the visibility of the note to private")
+	AddCmd.Flags().BoolVarP(&isPrivate, "private", "pv", false, "set the visibility of the note to private")
 
 	AddCmd.MarkFlagRequired("title")
 }
@@ -29,25 +29,23 @@ var AddCmd = &cobra.Command{
 }
 
 func run(_ *cobra.Command, _ []string) {
-	dataFolder := infra.Dirs.DataHome()
-
 	titleTrimmed, titleNormalized := infra.NormalizeInput(title)
 
-	fullFilePath := fmt.Sprintf("%s/%s.md", dataFolder, titleNormalized)
+	notePath := infra.GetDataResourcePath(titleNormalized)
 
-	if file, _ := os.Stat(fullFilePath); file != nil {
+	if file, _ := os.Stat(notePath); file != nil {
 		cobra.CheckErr("A note with the same name already exists")
 	}
 
 	if content == "" {
-		infra.OpenDefaultApp(fullFilePath)
+		infra.OpenDefaultApp(notePath)
 	} else {
-		if err := os.WriteFile(fullFilePath, []byte(content), 0644); err != nil {
+		if err := os.WriteFile(notePath, []byte(content), 0644); err != nil {
 			cobra.CheckErr(err)
 		}
 	}
 
-	if _, err := os.Stat(fullFilePath); os.IsNotExist(err) {
+	if _, err := os.Stat(notePath); os.IsNotExist(err) {
 		fmt.Printf("Note \"%s\" was not created.", titleTrimmed)
 
 		return

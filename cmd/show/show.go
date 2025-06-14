@@ -31,11 +31,9 @@ func run(_ *cobra.Command, args []string) {
 
 	_, titleNormalized := infra.NormalizeInput(title)
 
-	dataFolder := infra.Dirs.DataHome()
+	notePath := infra.GetDataResourcePath(titleNormalized)
 
-	fullFilePath := fmt.Sprintf("%s/%s.md", dataFolder, titleNormalized)
-
-	source, err := os.ReadFile(fullFilePath)
+	source, err := os.ReadFile(notePath)
 
 	if err != nil {
 		cobra.CheckErr(err)
