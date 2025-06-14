@@ -39,9 +39,19 @@ func run(_ *cobra.Command, _ []string) {
 		cobra.CheckErr("A note with the same name already exists")
 	}
 
-	if err := os.WriteFile(fullFilePath, []byte(content), 0644); err != nil {
-		cobra.CheckErr(err)
+	if content == "" {
+		infra.OpenDefaultApp(fullFilePath)
+	} else {
+		if err := os.WriteFile(fullFilePath, []byte(content), 0644); err != nil {
+			cobra.CheckErr(err)
+		}
 	}
 
-	fmt.Printf("Note %s created.", titleTrimmed)
+	if _, err := os.Stat(fullFilePath); os.IsNotExist(err) {
+		fmt.Printf("Note \"%s\" was not created.", titleTrimmed)
+
+		return
+	}
+
+	fmt.Printf("Note \"%s\" created.", titleTrimmed)
 }
