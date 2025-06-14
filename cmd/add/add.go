@@ -16,7 +16,7 @@ var (
 func init() {
 	AddCmd.Flags().StringVarP(&title, "title", "t", "", "title of the note (required)")
 	AddCmd.Flags().StringVarP(&content, "content", "c", "", "content of the note")
-	AddCmd.Flags().BoolVarP(&isPrivate, "private", "pv", false, "set the visibility of the note to private")
+	AddCmd.Flags().BoolVar(&isPrivate, "private", false, "set the visibility of the note to private")
 
 	AddCmd.MarkFlagRequired("title")
 }
