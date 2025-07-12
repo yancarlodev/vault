@@ -25,9 +25,9 @@ func run(_ *cobra.Command, notesTitle []string) {
 	for _, title := range notesTitle {
 		titleTrimmed, titleNormalized := infra.NormalizeInput(title)
 
-		fullFilePath := fmt.Sprintf("%s/%s.md", infra.Dirs.DataHome(), titleNormalized)
+		notePath := infra.GetDataResourcePath(titleNormalized)
 
-		err := os.Remove(fullFilePath)
+		err := os.Remove(notePath)
 
 		if os.IsNotExist(err) {
 			fmt.Println("[WARN]", err)
