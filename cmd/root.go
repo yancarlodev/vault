@@ -58,6 +58,8 @@ func initCLI() {
 
 	setConfigFile()
 
+	setPrivateKey()
+
 	viper.AutomaticEnv()
 
 	if err := viper.ReadInConfig(); err == nil {
@@ -80,4 +82,22 @@ func setConfigFile() {
 	viper.AddConfigPath(infra.Dirs.ConfigHome())
 	viper.SetConfigType("yaml")
 	viper.SetConfigName(".vlt")
+}
+
+func setPrivateKey() {
+	key, err := infra.GetPrivateKey()
+
+	if err != nil || key == "" {
+		keyBytes, err := infra.GenerateCryptKey()
+
+		if err != nil {
+			cobra.CheckErr(err)
+		}
+
+		err = infra.SetPrivateKey(string(keyBytes))
+
+		if err != nil {
+			cobra.CheckErr(err)
+		}
+	}
 }
