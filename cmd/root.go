@@ -87,7 +87,7 @@ func setConfigFile() {
 func setPrivateKey() {
 	key, err := infra.GetPrivateKey()
 
-	if err != nil || key == "" {
+	if err != nil || string(key) == "" {
 		keyBytes, err := infra.GenerateCryptKey()
 
 		if err != nil {

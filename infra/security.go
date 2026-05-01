@@ -21,10 +21,10 @@ func init() {
 	userName = systemUser.Username
 }
 
-func GetPrivateKey() (privateKey string, err error) {
-	privateKey, err = keyring.Get(serviceName, userName)
+func GetPrivateKey() ([]byte, error) {
+	privateKey, err := keyring.Get(serviceName, userName)
 
-	return
+	return []byte(privateKey), err
 }
 
 func SetPrivateKey(key string) (err error) {
